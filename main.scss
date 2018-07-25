@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700');
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
+
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    .input-field {
+        width: 100%;
+        max-width: 500px;
+    }
+    button {
+        display: block;
+        margin-left: 20px;
+    }
+    padding: 40px 0;
+}
+ul {
+    &.collection {
+        li {
+            @media screen and (min-width: 768px) {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            .left-cont {
+                flex-basis: 70%;
+            }
+            .right-cont {
+                display: flex;
+                align-items: center;
+                p,a {
+                    display: flex;
+                    align-items: center;
+                    i {
+                        margin-right: 10px;
+                    }
+                }
+                p + p {
+                    margin-left: 15px !important;
+                }
+                @media screen and (max-width: 580px) {
+                    margin-top: 15px;
+                }
+            }
+            .footer {
+                flex-basis: 100%;
+                padding-top: 20px;
+            }
+        }
+    }
+    &.pagination {
+        margin-top: 40px;
+        text-align: center;
+    }
+}
