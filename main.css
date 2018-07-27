@@ -169,6 +169,7 @@ ul.pagination {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  flex-wrap: wrap;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -176,7 +177,12 @@ ul.pagination {
       -ms-flex-align: center;
           align-items: center;
 }
-
+ul.pagination li {
+  height: auto;
+}
+ul.pagination li + li {
+  margin-left: 5px;
+}
 ul.pagination button {
   background-color: transparent;
   border: 0;
