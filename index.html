@@ -157,9 +157,14 @@
                     }
                 },
                 backToTop: function() {
-                    $('html,body').stop().animate({
-                        scrollTop: 0
-                    }, 2000, 'swing');
+                    setTimeout(
+                    function() 
+                    {
+                        $('html,body').stop().animate({
+                            scrollTop: 0
+                        }, 1500, 'swing');
+                    }, 500);
+
                 },
                 incrementPagination: function() {
                     if(this.page > this.maxPage) {
