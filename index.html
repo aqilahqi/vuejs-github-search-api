@@ -18,7 +18,7 @@
 
             <nav v-if="show">
                 <div class="nav-wrapper teal">
-                    <div class="col s12"><p>Total repositoy found: <span>{{total}}</span></p></div>
+                    <div class="col s12"><p>Found <span>{{total}}</span> {{ total == 1 ? 'repository' : 'repositories'}}</p></div>
                 </div>
             </nav>
 
@@ -120,8 +120,8 @@
                             vm.pagination = false
                             vm.load = false
                             vm.keyword = ''
-                            var toastHTML = '<span>Repository not found</span><button class="btn-flat toast-action"><i class="fas fa-exclamation-circle"></i></button>';
-                            M.toast({html: toastHTML});
+                            var toastHTML = '<span>Repository not found</span><i class="fas fa-exclamation-circle"></i>';
+                            M.toast({html: toastHTML,}, 3000, 'red lighten-1');
                         }else{
                             vm.error= false
                             vm.show = true

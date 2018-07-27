@@ -203,4 +203,8 @@ ul.pagination li:first-child{
 li.disabled > button {
   cursor: not-allowed;
 }
+
+.toast {
+  background-color : #ef5350 !important;
+}
 /*# sourceMappingURL=main.css.map */
