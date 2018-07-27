@@ -187,4 +187,14 @@ ul.pagination button {
 ul.pagination li.active button {
   color: #fff;
 }
+
+ul.pagination li:nth-last-child(n+12){
+  display: none;
+}
+ul.pagination li:first-child{
+  display: block;
+}
+li.disabled > button {
+  cursor: not-allowed;
+}
 /*# sourceMappingURL=main.css.map */

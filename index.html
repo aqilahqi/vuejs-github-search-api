@@ -14,14 +14,13 @@
 <body>
     <div id="app">
         <div class="container">
-            <!-- <div v-if="error" class="card-panel red lighten-1 error">
-                <span class="white-text">No repository found</span>
-            </div> -->
+
             <nav v-if="show">
                 <div class="nav-wrapper teal">
                     <div class="col s12"><p>Total repositoy found: <span>{{total}}</span></p></div>
                 </div>
             </nav>
+
             <div class="header">
                 <form v-on:submit="searchRepo">
                     <div class="input-field">
@@ -32,11 +31,12 @@
                         <i class="material-icons right">send</i>
                     </button>
                 </form>
-
             </div>
+
             <div class="progress" v-if="load">
                 <div class="indeterminate"></div>
             </div>
+
             <ul v-if="show" class="collection">
                 <li v-for="repo in repos" class="collection-item avatar">
                     <div class="left-cont">
@@ -53,22 +53,29 @@
                 </li>
             </ul>
                          
-            <ul v-if="show" class="pagination">
-                <li v-if="page == 1 " class="disabled"><button v-on:click="nextPage()" disabled><i class="material-icons">chevron_left</i></button></li>
-                <li v-if="page != 1 " class="waves-effect"><button v-on:click="nextPage()"><i class="material-icons">chevron_left</i></button></li>
-                <li v-for="n in 10" v-bind:class="{'waves-effect': (page != n),'active': (page === n)}"><button v-on:click="repoPage(n)">{{n}}</button></li>
-                <li class="waves-effect"><button v-on:click="nextPage()"><i class="material-icons">chevron_right</i></button></li>
+            <ul v-if="pagination" class="pagination">
+                <li v-if="page == 1 " class="disabled"><button v-on:click="prevPage()" disabled><i class="material-icons">chevron_left</i></button></li>
+                <li v-if="page != 1 " class="waves-effect"><button v-on:click="prevPage()"><i class="material-icons">chevron_left</i></button></li>
+
+                <!-- Pagination loop -->
+                <li v-for="n in maxPage" :key="n" v-bind:class="{'waves-effect': (page != n),'active': (page === n)}" :key="n"><button v-on:click="repoPage(n)">{{n}}</button></li>
+                <!-- <li v-if="page < 10 " v-for="n in 10" v-bind:class="{'waves-effect': (page != n),'active': (page === n)}"><button v-on:click="repoPage(n)">{{n}}</button></li> -->
+
+                <li v-if="page != total " class="waves-effect"><button v-on:click="nextPage()"><i class="material-icons">chevron_right</i></button></li>
+                <li v-if="page == total " class="disabled"><button v-on:click="nextPage()" disabled><i class="material-icons">chevron_right</i></button></li>
             </ul>
+
         </div>
     </div>
     
     <script>
+
         Vue.filter('formatDate', function(value) {
             if (value) {
-                // return moment(String(value)).format('Do MMMM YYYY')
                 return moment(String(value)).startOf('hour').fromNow()
             }
         });
+
         var vm = new Vue({
             el: '#app',
             data: {
@@ -77,11 +84,13 @@
                 total: '',
                 repos: [],
                 show: false,
+                pagination: false,
                 error: false,
                 load: false,
-                page: 1
+                page: 1,
+                n: 0,
+                maxPage: 10
             },
-
             methods: {
                 searchRepo: function(event) {
                     if(event){
@@ -91,22 +100,23 @@
                     var vm = this
                     var searchWord = this.keyword
                     var page = this.page
-                    console.log(page)
+                    console.log('Current Page: '+page)
                     var query = 'https://api.github.com/search/repositories?sort=stars&per_page=10&page='+page+'&q='
                     vm.load = true
-                    // console.log(query+searchWord)
 
                     axios.get(query + searchWord )
                     .then(function (response) {
                         var total = response.data.total_count
+                        var pages = Math.round(response.data.total_count/10)
                         vm.total = total
                         vm.repos = response.data.items
-                        // console.log(response.data.total_count)
+                        // console.log(pages)
                         // console.log(vm.repos)
                         
                         if( total == 0) {
                             vm.error= true
                             vm.show = false
+                            vm.pagination = false
                             vm.load = false
                             vm.keyword = ''
                             var toastHTML = '<span>Repository not found</span><button class="btn-flat toast-action"><i class="fas fa-exclamation-circle"></i></button>';
@@ -115,6 +125,11 @@
                             vm.error= false
                             vm.show = true
                             vm.load = false
+                            vm.pagination = true
+                        }
+                        
+                        if(total <= 10){
+                            vm.pagination = false
                         }
 
                     })
@@ -123,23 +138,55 @@
                     })
                 },
                 repoPage: function(arg) {
-                    var vm = this
                     this.page = arg
                     this.searchRepo()
+                    this.backToTop()
                 },
                 nextPage: function() {
-                    var vm = this
                     this.page = this.page + 1
                     this.searchRepo()
+                    this.backToTop()
+                    this.incrementPagination()
                 },
                 prevPage: function() {
-                    var vm = this
-                    this.page = this.page - 1
+                    vm.page = this.page - 1
                     this.searchRepo()
+                    this.backToTop()
+                    if(this.page >= 10){
+                        this.decreasePagination()
+                    }
+                },
+                backToTop: function() {
+                    $('html,body').stop().animate({
+                        scrollTop: 0
+                    }, 'slow', 'swing');
+                },
+                incrementPagination: function() {
+                    if(this.page > this.maxPage) {
+                        vm.n = this.n + 11
+                        this.maxPage = this.maxPage + 10
+                        // vm.n = 10
+                    }else {
+                        vm.n = 0
+                    }
+                    console.log('n: '+this.n)
+                    console.log('Max page: '+this.maxPage)
+                },
+                decreasePagination: function() {
+                    if(this.page < this.maxPage) {
+                        vm.n = this.n - 11
+                        this.maxPage = this.maxPage - 10
+                        // vm.n = 10
+                    }else {
+                        vm.n = 0
+                    }
+                    console.log('n: '+this.n)
+                    console.log('Max page: '+this.maxPage)
                 }
             }
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
