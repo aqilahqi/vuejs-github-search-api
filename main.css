@@ -207,4 +207,7 @@ li.disabled > button {
 .toast {
   background-color : #ef5350 !important;
 }
+.toast > button {
+  color: #fff !important;
+}
 /*# sourceMappingURL=main.css.map */

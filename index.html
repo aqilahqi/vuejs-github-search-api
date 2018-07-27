@@ -120,8 +120,8 @@
                             vm.pagination = false
                             vm.load = false
                             vm.keyword = ''
-                            var toastHTML = '<span>Repository not found</span><i class="fas fa-exclamation-circle"></i>';
-                            M.toast({html: toastHTML,}, 3000, 'red lighten-1');
+                            var toastHTML = '<span>Repository not found</span><button class="btn-flat toast-action"><i class="fas fa-exclamation-circle"></i></button>';
+                            M.toast({html: toastHTML});
                         }else{
                             vm.error= false
                             vm.show = true
